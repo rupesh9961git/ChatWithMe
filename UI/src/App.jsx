@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import ReactMarkdown from 'react-markdown'
 import './App.css'
 
 const LogoIcon = () => (
@@ -45,7 +46,12 @@ function Message({ role, text }) {
           <BotIcon />
         </div>
       )}
-      <div className="bubble">{text}</div>
+      <div className="bubble">
+        {isUser
+          ? text
+          : <ReactMarkdown>{text}</ReactMarkdown>
+        }
+      </div>
       {isUser && (
         <div className="avatar user-avatar">
           <UserIcon />

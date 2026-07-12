@@ -13,8 +13,13 @@ ChatWithMe/
 │   │   └── main.py        # FastAPI app & endpoints
 │   ├── model/
 │   │   └── model.py       # LLM model wrapper
-│   └── constant/
-│       └── constant.py    # Model name constants
+│   ├── constant/
+│   │   └── constant.py    # Model name constants
+│   ├── tools/
+│   │   └── tool.py        # LangChain tool definitions (e.g. weather)
+│   └── langGraph/
+│       ├── customerOrder.py   # Customer order flow graph
+│       └── learnLangGraph.py  # LangGraph learning examples
 ├── UI/                    # React (Vite) frontend
 ├── .env                   # Environment variables
 ├── requirements.txt       # Python dependencies
@@ -55,19 +60,21 @@ pip install -r requirements.txt
 
 Key packages installed:
 
-| Package            | Purpose                                  |
-| ------------------ | ---------------------------------------- |
-| `fastapi`          | Web framework for the API                |
-| `uvicorn`          | ASGI server to run FastAPI               |
-| `langchain-ollama` | LangChain integration for Ollama models  |
-| `ollama`           | Ollama Python client                     |
-| `pydantic`         | Request/response data validation         |
-| `python-dotenv`    | Load environment variables from `.env`   |
+| Package              | Purpose                                        |
+| -------------------- | ---------------------------------------------- |
+| `fastapi`            | Web framework for the API                      |
+| `uvicorn`            | ASGI server to run FastAPI                     |
+| `langchain-ollama`   | LangChain integration for Ollama models        |
+| `langchain-core`     | Core LangChain primitives (messages, tools)    |
+| `langgraph`          | Build stateful multi-node LLM graphs           |
+| `ollama`             | Ollama Python client                           |
+| `pydantic`           | Request/response data validation               |
+| `python-dotenv`      | Load environment variables from `.env`         |
 
 To install individually:
 
 ```bash
-pip install fastapi uvicorn langchain-ollama ollama pydantic python-dotenv
+pip install fastapi uvicorn langchain-ollama langchain-core langgraph ollama pydantic python-dotenv
 ```
 
 ### 3. Configure environment variables
@@ -90,11 +97,14 @@ The API will be available at `http://localhost:8000`.
 
 Endpoints:
 
-| Method | Path     | Description                        |
-| ------ | -------- | ---------------------------------- |
-| GET    | `/`      | Health check                       |
-| GET    | `/chat`  | Quick test chat                    |
-| POST   | `/askMe` | Send a message, get a response     |
+| Method | Path      | Description                                  |
+| ------ | --------- | -------------------------------------------- |
+| GET    | `/`       | Health check                                 |
+| GET    | `/chat`   | Quick test chat (hardcoded question)         |
+| POST   | `/askMe`  | Send a message, get a response               |
+| POST   | `/stream` | Stream a response                            |
+| POST   | `/batch`  | Run a batch of predefined questions          |
+| POST   | `/tool`   | Call model with tool use (weather lookup)    |
 
 ---
 
@@ -108,11 +118,12 @@ npm install --prefix UI
 
 Key packages installed:
 
-| Package                | Purpose                      |
-| ---------------------- | ---------------------------- |
-| `react` + `react-dom`  | UI framework                 |
-| `vite`                 | Dev server and bundler       |
-| `@vitejs/plugin-react` | React support for Vite       |
+| Package                | Purpose                              |
+| ---------------------- | ------------------------------------ |
+| `react` + `react-dom`  | UI framework                         |
+| `vite`                 | Dev server and bundler               |
+| `@vitejs/plugin-react` | React support for Vite               |
+| `react-markdown`       | Render markdown in chat responses    |
 
 ### 2. Run the frontend
 
@@ -145,6 +156,18 @@ npm run dev --prefix UI
 ```
 
 Then open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## LangGraph Examples
+
+Run the customer order flow graph:
+
+```bash
+.venv/bin/python -m Backend.langGraph.customerOrder
+```
+
+Outputs a step-by-step order flow (customer → search shop → place order → confirm → payment → delivery → feedback) and saves `customer_order_graph.png` to the project root.
 
 ---
 
