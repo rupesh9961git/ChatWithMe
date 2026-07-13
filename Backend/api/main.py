@@ -3,6 +3,7 @@ from ..model import model
 from ..constant import constant
 from pydantic import BaseModel
 from Backend.tools.tool import find_wheather
+from langsmith import traceable
 
 class Message(BaseModel):
     message: str
@@ -19,6 +20,7 @@ async def chat():
     return {"message": response}
 
 @app.post(path="/askMe")
+@traceable(name="askMe")
 async def askme(message:Message):
     response = model_ref.invoke_model_with_langchain_messages(model_name=constant.Constant.OLLAMA, messages=message.message)
     return {"message": response}

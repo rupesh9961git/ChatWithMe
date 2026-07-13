@@ -67,6 +67,7 @@ Key packages installed:
 | `langchain-ollama`   | LangChain integration for Ollama models        |
 | `langchain-core`     | Core LangChain primitives (messages, tools)    |
 | `langgraph`          | Build stateful multi-node LLM graphs           |
+| `langsmith`          | Tracing and observability for LLM calls        |
 | `ollama`             | Ollama Python client                           |
 | `pydantic`           | Request/response data validation               |
 | `python-dotenv`      | Load environment variables from `.env`         |
@@ -84,6 +85,12 @@ Create a `.env` file in the project root:
 ```env
 OLLAMA_API_KEY=your_api_key_here
 OLLAMA_BASE_URL=https://api.ollama.com
+
+# LangSmith tracing (optional)
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+LANGCHAIN_API_KEY=your_langsmith_api_key_here
+LANGCHAIN_PROJECT=ChatWithMe
 ```
 
 ### 4. Run the backend
@@ -181,10 +188,33 @@ Output is in `UI/dist/`. Serve it with any static file host or configure FastAPI
 
 ---
 
+## LangSmith Tracing
+
+LangSmith provides observability for all LLM calls. The `/askMe` endpoint is instrumented with `@traceable`.
+
+### Setup
+
+1. Sign up at [smith.langchain.com](https://smith.langchain.com)
+2. Go to **Settings → API Keys** and create a new key
+3. Add the following to your `.env` (already shown above in environment variables)
+
+### Viewing Traces
+
+Open [https://smith.langchain.com](https://smith.langchain.com) and navigate to your **ChatWithMe** project.
+
+Each POST to `/askMe` will appear as a trace named `askMe` with the underlying LLM call nested as a child span. You can inspect:
+
+- Input message and LLM response
+- Token usage and latency
+- Full conversation context passed to the model
+
+---
+
 ## Reference Documents
 
 | Resource | Description |
 | -------- | ----------- |
 | [LangGraph](https://www.langchain.com/langgraph) | LangChain's framework for building stateful, multi-agent LLM applications |
+| [LangSmith](https://smith.langchain.com) | Observability and tracing platform for LLM applications |
 | [FastAPI](https://fastapi.tiangolo.com/) | Official FastAPI documentation — routing, request models, async, and more |
 | [Ollama Cloud](https://docs.ollama.com/cloud) | Ollama Cloud API docs — authentication, endpoints, and model usage |
